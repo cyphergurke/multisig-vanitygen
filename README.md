@@ -2,7 +2,7 @@
 Generates a multisig address wich matches a prefix
 
 features:
--  of 2 Multisig Address
+-  2 of 2 Multisig Address
 -  addresstypes: p2sh, p2wsh
 
 ## installation
@@ -19,4 +19,3 @@ node main
 
 - implementing any multisig setup: n of m xpubs
 - improve workerperformance.
-- multithreading with workersCount (buggy atm)
