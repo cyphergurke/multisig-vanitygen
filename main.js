@@ -1,10 +1,6 @@
 const { Worker } = require('worker_threads');
 const readline = require('readline');
 
-const maxCount = 1000000; // Define how far you want to search
-const workersCount = 1; // Number of workers to use
-const rangePerWorker = Math.ceil(maxCount / workersCount);
-
 const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout
@@ -27,47 +23,49 @@ rl.question('Enter the first master public key: ', (key1) => {
                 addrtype = 'bc1q'
             }
 
+            rl.question('Enter the number of threads: ', (threads) => {
+                const maxCount = 1000000;
+                const rangePerWorker = Math.ceil(maxCount / threads);
+                
 
-            console.log(`Master Public Key 1: ${publicKey1}`);
-            console.log(`Master Public Key 2: ${publicKey2}`);
+                // Ask for vanity pattern
+                rl.question('Enter the vanity pattern: ', (vanityPattern) => {
+                    const workers = [];
+                    for (let i = 0; i < threads; i++) {
+                        const start = i * rangePerWorker;
+                        const end = start + rangePerWorker;
+                        const worker = new Worker('./worker.js', {
+                            workerData: {
+                                start: start,
+                                end: end,
+                                publicKey1: publicKey1,
+                                publicKey2: publicKey2,
+                                addresstype: addrt,
+                                vanityPattern: addrtype + vanityPattern.trim()
+                            }
+                        });
 
-            // Ask for vanity pattern
-            rl.question('Enter the vanity pattern: ', (vanityPattern) => {
-                const workers = []; 
-                for (let i = 0; i < workersCount; i++) {
-                    const start = i * rangePerWorker;
-                    const end = start + rangePerWorker;
-                    const worker = new Worker('./worker.js', {
-                        workerData: {
-                            start: start,
-                            end: end,
-                            publicKey1: publicKey1,
-                            publicKey2: publicKey2,
-                            addresstype: addrt,
-                            vanityPattern: addrtype + vanityPattern.trim()
-                        }
-                    });
+                        worker.on('message', (msg) => {
+                            if (msg.found) {
+                                console.log(`Vanity address found: ${msg.address} path ${msg.derivation}`);
+                                workers.forEach(w => w.terminate());
+                                process.exit();
+                            }
+                        });
 
-                    worker.on('message', (msg) => { 
-                        if (msg.found) {
-                            console.log(`Vanity address found: ${msg.address} path ${msg.derivation}`);
-                            workers.forEach(w => w.terminate());
-                            process.exit();
-                        }
-                    });
+                        worker.on('error', (err) => {
+                            console.error(err);
+                        });
 
-                    worker.on('error', (err) => {
-                        console.error(err);
-                    });
+                        worker.on('exit', (code) => {
+                            if (code !== 0) console.error(`Worker stopped with exit code ${code}`);
+                        });
 
-                    worker.on('exit', (code) => {
-                        if (code !== 0) console.error(`Worker stopped with exit code ${code}`);
-                    });
-
-                    workers.push(worker);
-                }
-                rl.close();
+                        workers.push(worker);
+                    }
+                    rl.close();
+                });
             });
-        })
+        });
     });
 });
