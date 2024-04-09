@@ -49,7 +49,7 @@ for (let i = 0; i < workerData.end; i++) {
     if (matchesVanityPattern(address, workerData.vanityPattern)) {
         parentPort.postMessage({ found: true, address: address, derivation: i })
         break;
-    } else {
+    }/*  else {
         parentPort.postMessage({ found: false, address: address, derivation: i })
-    }
+    } */
 }

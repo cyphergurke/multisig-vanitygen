@@ -33,8 +33,7 @@ rl.question('Enter the first master public key: ', (key1) => {
 
             // Ask for vanity pattern
             rl.question('Enter the vanity pattern: ', (vanityPattern) => {
-                const workers = [];
-                console.log(addrtype + vanityPattern.trim())
+                const workers = []; 
                 for (let i = 0; i < workersCount; i++) {
                     const start = i * rangePerWorker;
                     const end = start + rangePerWorker;
@@ -49,8 +48,7 @@ rl.question('Enter the first master public key: ', (key1) => {
                         }
                     });
 
-                    worker.on('message', (msg) => {
-                        console.log(msg.address);
+                    worker.on('message', (msg) => { 
                         if (msg.found) {
                             console.log(`Vanity address found: ${msg.address} path ${msg.derivation}`);
                             workers.forEach(w => w.terminate());
