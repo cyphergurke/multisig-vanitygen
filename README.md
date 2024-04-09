@@ -14,3 +14,9 @@ npm i
 ```bash
 node main
 ```
+
+# TODO
+
+- implementing any multisig setup: n of m xpubs
+- improve workerperformance.
+- multithreading with workersCount (buggy atm)

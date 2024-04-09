@@ -9,15 +9,15 @@ const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout
 });
+// test xpubs
 /* const publicKey1 = "xpub6DdWQUqa5cGtS6HJByj1u2r3QLg9zGh3uWnnJC9n2kRVAuXRDep7WyzLirVfQyiEWvfGXcwSH5jTfwPBr3grjDAUGkDzuSc4yPsr9TBjphK"
 const publicKey2 = "xpub6EoaJhcmBJNkMSbSwRQtukLfxUKQbxoMM5YWtAzZ4jfzBsbyvhqA5Bz11wPCWJE9diP5XMfgL3EbthL7zpinWxUuSby9Jfsh3jAHWG3n9a5"
 */
 
 rl.question('Enter the first master public key: ', (key1) => {
     rl.question('Enter the second master public key: ', (key2) => {
-        // Process input keys
-        const publicKey1 = key1.trim(); // Ensure whitespace is removed
-        const publicKey2 = key2.trim(); // Ensure whitespace is removed
+        const publicKey1 = key1.trim();
+        const publicKey2 = key2.trim();
 
         rl.question('Enter the Address type (p2sh, p2wsh): ', (addrt) => {
             let addrtype;
